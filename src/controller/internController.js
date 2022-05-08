@@ -8,7 +8,8 @@ const isValidRequestBody = function (requestBody) {
 };
 const createIntern = async function (req, res) {
   try {
-    const reqbody = req.body;
+    
+    let reqbody = req.body
 
     //if empty body
     if (!isValidRequestBody(reqbody)) {
@@ -16,14 +17,15 @@ const createIntern = async function (req, res) {
         .status(400)
         .send({ status: false, message: "Please provide intern details - name, mobile, email, collegeName"});
     }
-
-    const { name, mobile, email, collegeName } = reqbody;
+    
+    let { name, mobile, email, collegeName } = reqbody;
 
     if (!name?.trim()) {
       return res
         .status(400)
         .send({ status: false, message: "Please provide name" });
     }
+    
 
     //Email validation
     if (!email?.trim()) {
@@ -44,16 +46,13 @@ const createIntern = async function (req, res) {
     }
 
 
-    
-    
-
     //Mobile validation
     if (!mobile?.trim()) {
       return res
         .status(400)
         .send({ status: false, message: "Please provide mobile number" });
     }
-    if (!(/^\d{10}$/).match(mobile)) {
+    if (!(/^\d{10}$/).test(mobile)) {
 
       return res
         .status(400)
@@ -76,9 +75,10 @@ const createIntern = async function (req, res) {
     }
 
     //LOGIC
-    const getId = getCollegeId._doc;
+    const getId = getCollegeId._id;
   
     reqbody.collegeId = getId;
+    reqbody.email = email.toLowerCase()
     const internDetails = await internModel.create(reqbody);
     return res.status(201).send({ status: true, data: internDetails });
     
